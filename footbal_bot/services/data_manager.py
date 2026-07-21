@@ -146,6 +146,17 @@ class DataManager:
         """
 
         user_input = normalize(user_input)
+        aliases = {
+                "sampiyonlar ligi": "UEFA Champions League",
+                "champions league": "UEFA Champions League",
+                "ucl": "UEFA Champions League",
+
+                "avrupa ligi": "UEFA Europa League",
+                "europa league": "UEFA Europa League",
+
+                "konferans ligi": "UEFA Europa Conference League",
+                "conference league": "UEFA Europa Conference League"
+        }
 
         # Tam eşleşme
         for league_id, league_name in self.leagues.items():
