@@ -50,3 +50,6 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger("FootballBot")
+
+print("Environment BOT_TOKEN:", repr(os.environ.get("BOT_TOKEN")))
+print("Environment API_KEY:", repr(os.environ.get("API_KEY")))
