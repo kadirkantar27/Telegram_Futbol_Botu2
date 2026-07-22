@@ -14,7 +14,10 @@ class DataManager:
         self.leagues: Dict[int, str] = {
             203: "Süper Lig",
             204: "1. Lig",
-            205: "2. Lig"
+            205: "2. Lig",
+            2: "UEFA Champions League",
+            3: "UEFA Europa League",
+            848: "UEFA Europa Conference League"
         }
 
     async def initialize(self):

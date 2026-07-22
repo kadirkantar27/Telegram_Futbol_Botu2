@@ -61,14 +61,17 @@ class FootballAPI:
         """
         Belirli ligdeki takımları getir
         """
-
         from datetime import datetime
+
+        now = datetime.now()
+        # Temmuz (7. ay) ve sonrasındaysak bulunduğumuz yıl, değilse bir önceki yıl sezondur.
+        current_season = now.year if now.month >= 7 else now.year - 1
 
         data = await cls.fetch(
             "teams",
             {
                 "league": league_id,
-                "season": datetime.now().year
+                "season": current_season
             }
         )
 
@@ -121,6 +124,7 @@ class FootballAPI:
         )
 
         return data.get("response", [])
+    
 
     @classmethod
     async def get_fixtures(
@@ -131,10 +135,16 @@ class FootballAPI:
         """
         Yaklaşan maçları getir
         """
+        from datetime import datetime
+        
+        now = datetime.now()
+        # Temmuz veya sonrasındaysak yeni sezon (örn: 2026), değilse geçen sezon
+        current_season = now.year if now.month >= 7 else now.year - 1
 
         params = {
-            "next": 9,
-            "timezone": "Europe/Istanbul"
+            "next": 5,
+            "timezone": "Europe/Istanbul",
+            "season": current_season  # API'yi yeni sezona bakmaya zorluyoruz
         }
 
         if team_id:
@@ -149,5 +159,24 @@ class FootballAPI:
         )
 
         return data.get("response", [])
+    
+
+    @classmethod
+    async def get_turkish_live_scores(cls) -> List[dict]:
+        """
+        Türkiye liglerindeki canlı maçları getir
+        """
+        matches = []
+        for league_id in [203, 204, 205]:
+             data = await cls.fetch(
+            "fixtures",
+            {
+                "league": league_id,
+                "live": "all"
+            }
+        )
+
+        matches.extend(data.get("response", []))
+        return matches
     
     
