@@ -18,16 +18,27 @@ class ScoresHandler:
         context: ContextTypes.DEFAULT_TYPE
     ):
         """/skor komutu"""
-
-        # Parametre verilmediyse tüm canlı maçlar
         if not context.args:
-
             matches = await FootballAPI.get_live_matches()
 
-            await update.message.reply_text(
-                Formatter.format_live_matches(matches)
-            )
+            turkish_team_ids = set(self.data_manager.team_map.values())
 
+            turkish_matches = []
+            for match in matches:
+                home_id = match["teams"]["home"]["id"]
+                away_id = match["teams"]["away"]["id"]
+                if home_id in turkish_team_ids or away_id in turkish_team_ids:
+                    turkish_matches.append(match)
+
+            if not turkish_matches:
+                await update.message.reply_text(
+                    "🇹🇷 Şu anda Türk takımlarının canlı maçı bulunmuyor."
+                )
+                return
+
+            await update.message.reply_text(
+                Formatter.format_live_matches(turkish_matches)
+            )
             return
 
         query = " ".join(context.args)
@@ -38,27 +49,21 @@ class ScoresHandler:
         )
 
         if team_id:
-
             matches = await FootballAPI.get_live_matches(
                 team_id=team_id
             )
-
             await update.message.reply_text(
                 Formatter.format_live_matches(matches)
             )
-
             return
 
         if league_id:
-
             matches = await FootballAPI.get_live_matches(
                 league_id=league_id
             )
-
             await update.message.reply_text(
                 Formatter.format_live_matches(matches)
             )
-
             return
 
         await update.message.reply_text(
